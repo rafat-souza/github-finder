@@ -4,6 +4,7 @@ import { type RepoProps } from "../types/repo";
 
 import BackBtn from "../components/BackBtn";
 import Loader from "../components/Loader";
+import Repo from "../components/Repo";
 
 import classes from "./Repos.module.css";
 
@@ -23,6 +24,8 @@ const Repos = () => {
       const data = await res.json();
 
       setIsLoading(false);
+
+      setRepos(data);
     };
 
     if (username) {
@@ -30,9 +33,20 @@ const Repos = () => {
     }
   }, []);
 
+  if (!repos && isLoading) return <Loader />;
+
   return (
     <div>
       <BackBtn />
+      <h2>Explore os repositórios do usuário: {username}</h2>
+      {repos && repos.length === 0 && <p>Não há repositórios.</p>}
+      {repos && repos.length > 0 && (
+        <div>
+          {repos.map((repo: RepoProps) => (
+            <Repo key={repo.name} {...repo} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
